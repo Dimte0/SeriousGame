@@ -2,7 +2,7 @@ function runprog(){
     function change(){
         
         const xhr = new XMLHttpRequest();
-        xhr.open("GET", "game/game.html", true);
+        xhr.open("GET", "InitPlayers/initPlayers.html", true);
         xhr.onload = function() {
             if (xhr.status === 200) {
                 console.log("dedee");
@@ -10,10 +10,10 @@ function runprog(){
             }
             // Définissez l'URL du fichier CSS alternatif
             let newStylesheet = document.getElementById("frame-style");
-            newStylesheet.setAttribute("href", "game/game.css");
+            newStylesheet.setAttribute("href", "InitPlayers/initPlayers.css");
 
             var script = document.createElement('script');
-            script.src = "game/game.js";
+            script.src = "InitPlayers/initPlayers.js";
 
             // Assurez-vous que le script précédent est supprimé (s'il existe)
             var scripts = document.getElementsByTagName('script');

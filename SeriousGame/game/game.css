@@ -31,9 +31,6 @@ button:hover{
     width:70%;
     transform: translate(-50%, -50%);
 }
-#bottom-response-panel{
-    /*background-color: blueviolet;*/
-}
 #bottom-question-panel{
     position:static;
     border-radius: 20px;

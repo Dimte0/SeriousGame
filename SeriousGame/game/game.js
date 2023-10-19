@@ -31,46 +31,78 @@ class Joueur {
     }
 }
 
-startGame();
-//TODO:  
-//On suppose qu'il y a uniquement 1 joueur
-async function startGame(){
-    let player = new Joueur(0, "Dimitri", 0, []);
-    let isWin = false;
-    //créer le plateau
-    let plateau = [0,1,2,3,4,5,6,7]
-    console.log("BIENVENUE sur Serious");
-    while(!isWin){
-        console.log("C'est le tour de ");
+let ListPlayer = document.currentScript.getAttribute("param1");
+ListPlayer = ListPlayer.split(",");  
+startGame(ListPlayer);
+//TODO: BETTER INIT
 
-        let casePlayer = plateau[player.pos];
-        console.log("Le joueur est sur la case")
-        let epreuve = await caseEvent(casePlayer); //récupére le résultat d'une épreuve (ARRAY)
-        if(epreuve != null && epreuve[1] > 0){
-            player.addfrog(epreuve[0])
-            player.mouvPlayer(epreuve[1]);
-            if(player.pos > 7){
-                player.pos = 7;
+//On suppose qu'il y a uniquement 1 joueur
+async function startGame(LP){
+    //init player
+    let players = [];
+    for(i = 0; i < LP.length; i++){
+        players[i] = new Joueur(0,LP[i],0 ,[]);
+    }
+    let player = new Joueur(0, "Dimitri", 0, []);
+    let isWin = false; let isFinal = false;
+    //créer le plateau
+    let plateau = 
+    [0,1,2,3,4,5,6,
+     0,1,2,3,4,5,6,
+     0,1,2,3,4,5,6,
+     0,1,2,3,4,5,6,
+     0,7];
+    console.log("BIENVENUE sur Serious");
+    let ine = -1;
+    while(!isWin){
+        ine += 1; 
+        let playerTurn = ine % players.length; 
+        alert("C'est le tour de "+players[playerTurn].name);
+        if(!isFinal){
+            let casePlayer = plateau[players[playerTurn].pos];
+            console.log("Le joueur est sur la case" + players[playerTurn].pos);
+            let resEpreuve = await caseEvent(casePlayer); //récupére le résultat d'une épreuve (ARRAY)
+            if(resEpreuve != null && resEpreuve[1] > 0){
+                players[playerTurn].addfrog(resEpreuve[0]);
+                players[playerTurn].mouvPlayer(resEpreuve[1]);
+                if(players[playerTurn].pos > plateau.length - 1){
+                    players[playerTurn].pos = plateau.length - 1;
+                }
+            }
+            if(resEpreuve == null) {players[playerTurn].pos = 0;}
+        }else{
+            let resEpreuve = await FinalPhase(players[playerTurn].frog);
+            if(resEpreuve != null && resEpreuve[1] > 0){
+                players[playerTurn].addfrog(resEpreuve[0]);
+            }   
+        }
+        if(players[playerTurn].frog.length == 6){
+            if(isFinal){
+                isWin = true;
+                alert("Félicitation à "+ players[playerTurn].name);
+            }else{
+                isFinal = true;
+                players[playerTurn].frog = [];
             }
         }
-        if(epreuve == null) {player.pos = 0;}
-
-        if(player.frog.length == 6){
-            isWin = true;
-            console.log("Félicitation à "+ player.name);
-        }
     }
-    
-    
-
 }
+
+    async function FinalPhase(frogArray){
+        let val = [1,2,3,4,5,6]
+        val = val.filter(function(item) {
+            return frogArray.indexOf(item) === -1;
+        });
+
+        return await CreateChoose(val);
+    }
 
 //Fonction pour définir l'épreuve choist selon l'événement de la case
     async function caseEvent(casePlayer){
         switch(casePlayer){
             case 0:
                 console.log("multi-choix");
-                return await multiChoose();
+                return await multiChoose(3);
             case 1:
                 console.log("EPREUVE1")
                 return await questionEpreuve(1);
@@ -94,103 +126,90 @@ async function startGame(){
                 return null;
         }
     }
-//fonction qui trouve la case 0 de multi-choix
-    async function multiChoose(){
+//fonction qui définie la case 0 :  multi-choix
+//
+    async function multiChoose(numRan){
         console.log("Vous êtes sur un choix multiple");
-
-        let val = [1,2,3];
-
-        return await CreateChoose(val);
-
-    }
-
-async function CreateChoose(val){
-
-    let mainDiv = document.createElement("div");
-    mainDiv.id="bottom";
-
-    let boutonClique = [];
-    for(i = 0; i < 3; i++){
-        let index = i;
-        let bouton = document.createElement("button");
-        bouton.innerText = val[i];
-
-        boutonClique[i] = new Promise((resolve) => {
-            bouton.addEventListener("click", () => {
-                mainDiv.remove();
-                resolve(val[index]);
+        
+        let val = [];
+        let pos = [1,2,3,4,5,6];
+        for(i = 0; i < numRan; i++){
+            let randNumber = Math.floor(Math.random() * pos.length - 1) + 1;
+            val[i] = pos[randNumber];
+            pos = pos.filter(function(item) {
+                return [pos[randNumber]].indexOf(item) === -1;
             });
-        });
-
-        mainDiv.appendChild(bouton);
+        }
+        return await CreateChoose(val);
     }
-    
-    
-    let body = document.getElementsByTagName("body")[0];
-    body.appendChild(mainDiv);
-    
-    let result = await ClickButton(boutonClique);
-    return await questionEpreuve(result);
 
-}
+    async function CreateChoose(val){
+        //init element
+        boutonClique = initBottom(val,"Choisissez un thème parmis les TROIS");
+        
+        let result = await ClickButton(boutonClique);
+        return await questionEpreuve(result);
+
+    }
 
 
 //fonction qui va demander la difficulté choisit + afficher la question
     //Retourne l'épreuve + la réussite OU complete le joueur
+    //TODO : SQL
     async function questionEpreuve(epreuve){
         console.log(epreuve);
-        //choix difficulté
-        //console.log("Quel est votre difficulté")
+        
+        //init
+        boutonClique = initBottom(["Paris", "Moscou", "Tokyo"], "Quel est la capitale de France ?");
+        reponse = "Paris";
+        let result = await ClickButton(boutonClique);
+        let res = [];
 
-        //print question
+        if(result == reponse) res = [epreuve, 2];
+        else res = [epreuve, 0];
+        return res;
+    }
+
+    function initBottom(val, phrase){
+        //init
         let mainDiv = document.createElement("div");
-        mainDiv.id = "bottom";
+        mainDiv.id="bottom";
+        let ChooseDiv = document.createElement("div");
+        ChooseDiv.id = "bottom-response-panel"
+        let SentenceDiv = document.createElement("div");
+        SentenceDiv.id = "bottom-question-panel";
 
-        let reponseDiv = document.createElement("div");
-        reponseDiv.id = "bottom-response-panel"
-        //deffinition des boutons + de leurs champs de réponse
-        let val = ["Paris", "Moscou", "Tokyo"];
-        let reponse = val[0];
+        //init bouton
         let boutonClique = [];
-        for(i = 0; i < 3; i++){
+        for(i = 0; i < val.length; i++){
             let index = i;
             let bouton = document.createElement("button");
             bouton.innerText = val[i];
-    
+
+            //Promise
             boutonClique[i] = new Promise((resolve) => {
                 bouton.addEventListener("click", () => {
                     mainDiv.remove();
                     resolve(val[index]);
                 });
             });
-    
-            reponseDiv.appendChild(bouton);
+
+            ChooseDiv.appendChild(bouton);
         }
-        //definition de la QUESTION
-        let questionDiv = document.createElement("div");
-        questionDiv.id = "bottom-question-panel";
-        
+
         let par = document.createElement("p");
         par.id = "question-zone";
-        par.innerText = "Quel est la capitale de France"
-        questionDiv.appendChild(par);
+        par.innerText = phrase;
+        SentenceDiv.appendChild(par);
 
-        mainDiv.appendChild(reponseDiv);
-        mainDiv.appendChild(questionDiv);
+        mainDiv.appendChild(ChooseDiv);
+        mainDiv.appendChild(SentenceDiv);
 
         let body = document.getElementsByTagName("body")[0];
         body.appendChild(mainDiv);
 
-        let result = await ClickButton(boutonClique);
-        let res = [];
-        if(result == reponse){
-            res = [epreuve, 2];
-        }else{
-            res = [epreuve, 0];
-        }
-        return res;
+        return boutonClique;
     }
-
     async function ClickButton(boutonClique){
         console.log("JATTENDS")
         try {
