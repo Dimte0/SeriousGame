@@ -26,12 +26,11 @@ def list_players():
     return jsonify(items_list)
 
 # Route pour la création d'un joueur (Create)
-@player_route.route('/api/player_route/', methods=['POST'])
-def create_player():
+@player_route.route('/api/player_route/<int:PartieID>', methods=['POST'])
+def create_player(PartieID):
     data = request.json  # Supposons que vous recevez des données au format JSON
     joueurPseudo = data.get('joueurPseudo')
     joueurPoint = data.get('joueurPoint')
-    PartieID = data.get('PartieID')
 
     # Insérer le nouveau joueur dans la base de données
     connection.execute("INSERT INTO joueur (joueurPseudo, joueurPoint, PartieID) VALUES (%s, %s, %s)", (joueurPseudo, joueurPoint, PartieID))
