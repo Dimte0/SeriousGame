@@ -1,0 +1,202 @@
+  /*----------------------------GLOBAL CSS ----------------------------------------*/
+  
+  
+  body{
+    background-color: red;
+    color: azure;
+  }
+  body {
+    background: linear-gradient(to bottom, rgb(10, 94, 3),rgb(50, 94, 3), rgb(100, 94, 3), rgb(150, 94, 3));
+    background-size: 100% 400%;
+    animation: gradient 15s infinite alternate;
+    height: 100vh;
+  }
+  
+  @keyframes gradient { 
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: 0% 100%;
+    }
+  }
+
+ /*------------------------------FIRSTAPP-------------------------------------------*/
+
+  .firstapp #top{
+    text-align: center;
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+  }
+  
+  .firstapp #center{
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .firstapp #img_game img{
+    width: 100%;
+    height: 100%;
+  }
+  .firstapp button {
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+
+/*--------------------INIT_PLAYERS---------------------*/
+
+body{
+  background-color: black;
+  text-align: center;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  
+}
+
+.InitPlayers {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  
+}
+
+.InitPlayers #MainDiv {
+  color: green;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.InitPlayers #top{
+  width: 100%;
+  height: 50%;
+}
+
+.InitPlayers #RectTitle{
+  position: relative;
+  width: 10%;
+  left : 50%;
+  top : 50%;
+  transform: translate(-50%, -50%);
+
+  padding: 20px;
+  border: 5px solid;
+  background-color: white;
+  border-color: greenyellow;
+  border-radius: 2px;
+  box-shadow: 
+      inset 2px 2px 10px 2px rgba(0,0,0,.5),
+      inset 0px -2px 10px 2px rgba(0,0,0,.5);
+}
+
+.InitPlayers #bottom{
+  width: 70%;
+  padding-inline: 15%;
+  height: 50%;
+}
+
+.InitPlayers #PlayersList{
+  position: relative;
+  display: inline-flex;
+  float: left;
+  margin-left: 10%;
+  margin-top: 1%;
+  width: 15%;
+  top : 15%;
+  transform: translate(-50%, -50%);
+}
+
+.InitPlayers #Player{
+  padding-inline: 30px;
+  border: 5px solid;
+  background-color: white;
+  border-color: greenyellow;
+  border-radius: 2px;
+  box-shadow: 
+      inset 2px 2px 10px 2px rgba(0,0,0,.5),
+      inset 0px -2px 10px 2px rgba(0,0,0,.5);
+}
+
+.InitPlayers .Player_text{
+  border: none;        /* Supprimer la bordure */
+  resize: none;        /* Désactiver le redimensionnement */
+  outline: none;       /* Supprimer la mise en évidence au focus */
+  background: transparent; /* Fond transparent */
+}
+
+.InitPlayers button{
+  width: 200px;
+  height: 50px;
+  border: none; /* Supprimer la bordure */
+  border-color: aquamarine;
+  border-radius: 50%;
+  margin-inline: 10px;
+  cursor: pointer;
+  font-size: 16px;
+
+}
+
+/*----------------------------------*/
+.Game body{
+  background-color: white;
+}
+
+.Game button{
+  padding: 10px 20px;
+  font-size: 16px;
+  margin: 2%;
+  margin-inline: 5%;
+  border : 7px solid;
+  border-radius: 20px;
+  border-color: rgb(11, 132, 11);
+  box-shadow: 
+      inset 2px 2px 10px 2px rgba(0,0,0,.5),
+      inset 0px -2px 10px 2px rgba(0,0,0,.5);
+}
+
+.Game button:hover{
+  box-shadow: 
+      2px 2px 10px 2px rgba(0,0,0,.5),
+      0px -2px 10px 2px rgba(0,0,0,.5),
+      inset 2px 2px 10px 2px rgba(0,0,0,.5),
+      inset 0px -2px 10px 2px rgba(0,0,0,.5);
+}
+
+.Game #bottom{
+  text-align: center;
+  position: absolute;
+  top: 75%;
+  left: 50%;
+  width:70%;
+  transform: translate(-50%, -50%);
+}
+.Game #bottom-question-panel{
+  position:static;
+  border-radius: 20px;
+  border : 15px solid;
+  border-color: rgb(11, 132, 11);
+  background-color: rgb(142, 133, 133);
+  width: 70%;
+  margin-inline:15%;
+  padding-block:3%;
+  box-shadow: 
+      inset 2px 2px 10px 2px rgba(0,0,0,.5),
+      inset 0px -2px 10px 2px rgba(0,0,0,.5);
+
+}
+
+.Game #question-zone{
+  color: white;
+  font-weight: bold;
+}
+
