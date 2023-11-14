@@ -127,7 +127,7 @@ def delete_player(joueurID):
         cursor = db.cursor()
         
         # Supprimer le joueur de la base de données
-        cursor.execute(os.environ.get('delete_palyer_query'), (joueurID,))
+        cursor.execute(os.environ.get('delete_player_query'), (joueurID,))
         db.commit()
         
         if cursor.rowcount == 0:

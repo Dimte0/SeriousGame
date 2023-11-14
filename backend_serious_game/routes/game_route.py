@@ -15,7 +15,6 @@ def list_games():
         cursor = db.cursor()
         cursor.execute(os.environ.get('list_games_query'))
         games = cursor.fetchall()
-
         items_list = []
         for game in games:
             item_dict = {
