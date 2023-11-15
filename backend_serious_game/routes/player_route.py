@@ -37,15 +37,15 @@ def create_player(PartieID):
     
     try: 
         cursor = db.cursor()
-        data = request.json  # Supposons que vous recevez des données au format JSON
+        data = request.json
         joueurPseudo = data.get('joueurPseudo')
         joueurPoint = data.get('joueurPoint')
 
-        # Insérer le nouveau joueur dans la base de données
+        # Insert new player into the Database
         cursor.execute(os.environ.get('create_game_query'), (joueurPseudo, joueurPoint, PartieID))
         db.commit()
         
-        # Récupérer l'ID du joueur créé
+        # Get created player ID
         joueurID = cursor.lastrowid
 
         return jsonify({"joueurID": joueurID})
@@ -56,6 +56,7 @@ def create_player(PartieID):
         return jsonify({"error": "Une erreur inattendue s'est produite", "details": str(e)}), 500
     finally:
         cursor.close()
+        
 
 # Route pour la lecture d'un joueur (Read)
 @player_route.route('/api/player_route/<int:joueurID>/', methods=['GET'])
@@ -63,7 +64,8 @@ def get_player(joueurID):
     
     try:
         cursor = db.cursor()
-        # Exécuter la requête SQL pour obtenir les données de la partie
+        
+        #execute this SQL request in order to get game data 
         cursor.execute(os.environ.get('get_player_query'), (joueurID,))
         player = cursor.fetchone()
 
@@ -84,6 +86,28 @@ def get_player(joueurID):
     finally:
         cursor.close()
 
+# Route pour reinitialiser à 0 le point du joueur au depart (reset)
+@player_route.route('/api/player_route/init_score/<int:joueurID>/', methods=['POST'])
+def init_score(joueurID):
+    try:
+        cursor = db.cursor()
+
+        # Update player information in the database
+        cursor.execute(os.environ.get('init_player_point_query'),(joueurID,))
+        db.commit()
+
+        if cursor.rowcount == 0:
+            return jsonify({"error": "Le joueur avec l'ID spécifié n'a pas été trouvé"}), 404
+
+        return jsonify({"message": "Le point du joueur a été reinitialisé avec succès"})
+    except mysql.connector.Error as e:
+        db.rollback()
+        return jsonify({"error": "Erreur lors de la mise à jour du joueur", "details": str(e)}), 500
+    except Exception as e:
+        return jsonify({"error": "Une erreur inattendue s'est produite", "details": str(e)}), 500
+    finally:
+        cursor.close()
+        
 # Route pour la mise à jour d'un joueur (Update)
 @player_route.route('/api/player_route/<int:joueurID>/', methods=['PUT'])
 def update_player(joueurID):
@@ -99,11 +123,11 @@ def update_player(joueurID):
         joueurPoint = data.get('joueurPoint')
         PartieID = data.get('PartieID')
 
-        # Validation des données d'entrée (on peut ajouter des règles de validation ici)
+        # Validate entry data
         if joueurPseudo is None or joueurPoint is None or PartieID is None:
             return jsonify({"error": "Des champs obligatoires sont manquants dans la demande"}), 400
 
-        # Mettre à jour les informations du joueur dans la base de données
+        # Update player information in the database
         cursor.execute(os.environ.get('update_player'),(joueurPseudo, joueurPoint, PartieID, joueurID))
         db.commit()
 
@@ -126,14 +150,14 @@ def delete_player(joueurID):
         
         cursor = db.cursor()
         
-        # Supprimer le joueur de la base de données
+        # Delete player from the Database
         cursor.execute(os.environ.get('delete_player_query'), (joueurID,))
         db.commit()
         
         if cursor.rowcount == 0:
             return jsonify({"error": "Le joueur avec l'ID spécifié n'a pas été trouvé"}), 404
 
-        # Renvoyer un message de confirmation
+        # Send a confirmation message
         return jsonify({"message": "Joueur supprimé avec succès"})
     except mysql.connector.Error as e:
         db.rollback()

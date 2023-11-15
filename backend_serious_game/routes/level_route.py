@@ -38,15 +38,15 @@ def create_level():
     try:
         cursor = db.cursor()
         
-        data = request.json  # Supposons que vous recevez des données au format JSON
+        data = request.json 
         niveauIntitule = data.get('niveauIntitule')
         niveauPoint = data.get('niveauPoint')
 
-        # Insérer le nouveau thème dans la base de données
+        # Insert the new theme into the database
         cursor.execute(os.environ.get('create_level_query'), (niveauIntitule,niveauPoint,))
         db.commit()
 
-        # Récupérer l'ID du thème créé
+        # Get created theme ID
         niveauID = cursor.lastrowid
         
         return jsonify({"niveauID": niveauID})
@@ -91,7 +91,7 @@ def update_level(niveauID):
     try:
         cursor = db.cursor()
         
-        data = request.json  # Supposons que vous recevez des données au format JSON
+        data = request.json 
         
         if not data:
             return jsonify({"error": "Aucune donnée JSON fournie"}), 400    
@@ -99,11 +99,11 @@ def update_level(niveauID):
         niveauIntitule = data.get('niveauIntitule')
         niveauPoint = data.get('niveauPoint')
 
-        # Validation des données d'entrée (on peut ajouter des règles de validation ici)
+        # Validate entry data
         if niveauIntitule is None or niveauPoint is None:
             return jsonify({"error": "Des champs obligatoires sont manquants dans la demande"}), 400
        
-        # Mettre à jour les informations du joueur dans la base de données
+        # Update level information in the database
         cursor.execute(os.environ.get('update_level_query'),(niveauIntitule,niveauPoint,niveauID))
         db.commit()
         
@@ -125,8 +125,8 @@ def delete_level(niveauID):
     try:
         
         cursor = db.cursor()
-        # Supprimer le niveau de la base de données
-        cursor.execute(os.environ.get('delele_level_query'), (niveauID,))
+        # Delete level from the database 
+        cursor.execute(os.environ.get('delete_level_query'), (niveauID,))
         db.commit()
 
         if cursor.rowcount == 0:

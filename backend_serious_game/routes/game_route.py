@@ -6,8 +6,6 @@ import mysql.connector
 
 game_route = Blueprint('game', __name__)
 
-cursor = db.cursor()
-
 # Route pour la liste de tous les parties (Read)
 @game_route.route('/api/game_route/', methods=['GET'])
 def list_games():
@@ -18,7 +16,8 @@ def list_games():
         items_list = []
         for game in games:
             item_dict = {
-                'partieID': game[0]
+                'partieID': game[0], 
+                'partieNom': game[1]
             }
             items_list.append(item_dict)
 
@@ -36,11 +35,14 @@ def create_game():
 
     try:
         cursor = db.cursor()
-        # Insérer la nouvelle partie dans la base de données
-        cursor.execute(os.environ.get('create_game_query'), ())
+        data = request.json 
+        partieNom = data.get('partieNom')
+        
+        # Insert the new game into the database 
+        cursor.execute(os.environ.get('create_game_query'), (partieNom))
         db.commit()
 
-        # Récupérer l'ID de la nouvelle partie
+        # Get the created game ID
         partieID = cursor.lastrowid
 
         if partieID:
@@ -58,15 +60,17 @@ def create_game():
 # Route pour la lecture d'une partie (Read)
 @game_route.route('/api/game_route/<int:PartieID>/', methods=['GET'])
 def get_game(PartieID):
+    print(PartieID)
     try:
         cursor = db.cursor()
-        # Exécuter la requête SQL pour obtenir les données de la partie
+        # Execute the SQL query to get the data from the game 
         cursor.execute(os.environ.get('get_game_query'), (PartieID,))
         game = cursor.fetchone()
-
+        print(game)
         if game:
             item_dict = {
-                'PartieID': game[0],
+                'partieID': game[0],
+                'partieNom': game[1]
             }
             return jsonify(item_dict)
         else:
@@ -77,13 +81,37 @@ def get_game(PartieID):
         return jsonify({"error": "Une erreur inattendue s'est produite", "details": str(e)}), 500
     finally:
         cursor.close()
+        
+# Route pour la mise à jour d'une partie (Update)
+@game_route.route('/api/game_route/<int:PartieID>/', methods=['PUT'])
+def update_game(PartieID):
+    try:
+        cursor = db.cursor()
+        data = request.json 
+        partieNom = data.get('partieNom')
+        
+        # Update game information in the database
+        cursor.execute(os.environ.get('update_game_query'), (partieNom ,PartieID))
+        db.commit()
+
+        if cursor.rowcount == 0:
+            return jsonify({"error": "La partie avec l'ID spécifié n'a pas été trouvée"}), 404
+
+        return jsonify({"message": "Partie mis à jour avec succès"})
+    except mysql.connector.Error as e:
+        db.rollback()
+        return jsonify({"error": "Erreur lors de la suppression de la partie", "details": str(e)}), 500
+    except Exception as e:
+        return jsonify({"error": "Une erreur inattendue s'est produite", "details": str(e)}), 500
+    finally:
+        cursor.close()
     
 # Route pour la suppression d'une partie (Delete)
 @game_route.route('/api/game_route/<int:PartieID>/', methods=['DELETE'])
 def delete_game(PartieID):
     try:
         cursor = db.cursor()
-        # Supprimer la partie de la base de données
+        # Delete game from the database
         cursor.execute(os.environ.get('delete_game_query'), (PartieID,))
         db.commit()
 

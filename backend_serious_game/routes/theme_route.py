@@ -37,14 +37,14 @@ def create_theme():
     try:
         cursor = db.cursor()
         
-        data = request.json  # Supposons que vous recevez des données au format JSON
+        data = request.json
         themeIntitule = data.get('themeIntitule')
 
-        # Insérer le nouveau thème dans la base de données
+        # Insert the new theme into the database 
         cursor.execute(os.environ.get('create_theme_query'), (themeIntitule,))
         db.commit()
 
-        # Récupérer l'ID du thème créé
+        # Get created theme ID
         themeID = cursor.lastrowid
         
         return jsonify({"themeID": themeID})
@@ -88,18 +88,18 @@ def update_theme(themeID):
     try:
         cursor = db.cursor()
         
-        data = request.json  # Supposons que vous recevez des données au format JSON
+        data = request.json
         
         if not data:
             return jsonify({"error": "Aucune donnée JSON fournie"}), 400    
 
         themeIntitule = data.get('themeIntitule')
 
-        # Validation des données d'entrée (on peut ajouter des règles de validation ici)
+        # Validate entry data
         if themeIntitule is None:
             return jsonify({"error": "Des champs obligatoires sont manquants dans la demande"}), 400
        
-        # Mettre à jour les informations du joueur dans la base de données
+        # Update theme information in the database
         cursor.execute(os.environ.get('update_theme_query'),(themeIntitule,themeID))
         db.commit()
         
@@ -117,12 +117,12 @@ def update_theme(themeID):
 
 # Route pour la suppression d'un joueur (Delete)
 @theme_route.route('/api/theme_route/<int:themeID>/', methods=['DELETE'])
-def delete_player(themeID):
+def delete_theme(themeID):
     try:
         
         cursor = db.cursor()
-        # Supprimer le thème de la base de données
-        cursor.execute(os.environ.get('delele_theme_query'), (themeID,))
+        # Delete theme from the database
+        cursor.execute(os.environ.get('delete_theme_query'), (themeID,))
         db.commit()
 
         if cursor.rowcount == 0:
