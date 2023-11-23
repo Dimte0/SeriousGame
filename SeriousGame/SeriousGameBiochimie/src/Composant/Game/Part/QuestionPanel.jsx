@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
 
-export default function QuestionPanel({resolvePromise, ChangeIsQuestion, ListButton, phrase, feedback}) {
+export default function QuestionPanel({resolvePromise, ListButton, phrase, feedback}) {
   
   //state
   

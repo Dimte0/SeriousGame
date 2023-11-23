@@ -28,6 +28,10 @@
     transform: translate(-50%, -50%);
   }
 
+  .Game #main{
+    background-color: red;
+  }
+
   .Game #bottom-question-panel{
     position:static;
     border-radius: 20px;

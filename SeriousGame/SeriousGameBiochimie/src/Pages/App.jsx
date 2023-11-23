@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import NameGame from '../Composant/NameGame';
-//import '../index.css'
+import LogoFrame from '../Composant/Global/LogoFrame';
+import '../index.css'
 
 export default function App(){
 
@@ -9,7 +9,7 @@ export default function App(){
         <div id="main">
           <div id="top">
               <span id="img_game">
-                <NameGame/>
+                <LogoFrame/>
               </span>
           </div>
 

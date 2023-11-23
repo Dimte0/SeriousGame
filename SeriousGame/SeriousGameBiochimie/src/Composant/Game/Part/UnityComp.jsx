@@ -1,9 +1,12 @@
+/* eslint-disable react/display-name */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { Unity, useUnityContext } from "react-unity-webgl";
-import { useEffect } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 
-export default function UnityComp({mouv}) {
+const UnityComp = forwardRef((props, ref) => {
+
+  const [IsMouvCamera, setIsMouvCamera] = useState(false)
 
   const { unityProvider, sendMessage } = useUnityContext({
     loaderUrl: "../My_Game/Build/My_Game.loader.js",
@@ -12,18 +15,22 @@ export default function UnityComp({mouv}) {
     codeUrl: "../My_Game/Build/My_Game.wasm",
   });
 
-  const MovePlayer = (x) =>{
-    sendMessage("Player1", "MoveNext", x); 
-  }
-  useEffect(() =>{
-    MovePlayer(mouv)
-  },[mouv])
+  
+
+  useImperativeHandle(ref, () =>({
+    async MovePlayer(x, id) {
+      if(!IsMouvCamera) setIsMouvCamera(true)
+      else sendMessage("Main Camera", "SwitchToNextPlayer")
+      sendMessage("Player"+id, "MoveNext", x);
+    }
+  }))
 
   return (
     <div>
     <Unity 
       unityProvider={unityProvider} 
       style={{
+        margin : "50px",
         width: "800px",
         height : "400px",
         border : "2px solid black",
@@ -34,5 +41,6 @@ export default function UnityComp({mouv}) {
     <Game Bouge={MovePlayer}></Game> */}
     </div>
   )
-}
+})
 //<button onClick={MovePlayer}>Appeler la fonction Unity</button>
+export default UnityComp;

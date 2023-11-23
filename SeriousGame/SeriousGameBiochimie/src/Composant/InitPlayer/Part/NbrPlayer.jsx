@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 export default function NbrPlayer({updateTab}) {
   //state
-  const MaxPlayers = 8
+  const MaxPlayers = 4
   const [nbPlayer, setNbPlayer] = useState(1)
 
   //comportements

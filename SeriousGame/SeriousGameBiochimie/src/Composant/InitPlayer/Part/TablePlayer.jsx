@@ -80,7 +80,6 @@ return (
             </li>
         ))}
         </ul>
-        <button onClick={GetListe}>OUI</button>
     </div>
   )
 }
