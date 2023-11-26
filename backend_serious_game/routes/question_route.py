@@ -1,5 +1,8 @@
 from flask import Blueprint, jsonify, request
 from database import db
+import sys
+sys.path.append('F:/ProjetSeriousGame/SeriousGame/backend_serious_game/upload')
+from upload import upload_file
 import mysql.connector
 import os
 import random
@@ -20,8 +23,9 @@ def list_all_questions():
             item_dict = {
                 'questionID': question[0],
                 'questionIntitule': question[1],
-                'themeID': question[2],
-                'niveauID': question[3]
+                'questionImage': question[2],
+                'themeID': question[3],
+                'niveauID': question[4]
             }
             items_list.append(item_dict)
         
@@ -47,8 +51,9 @@ def list_questions(niveauID, themeID):
             item_dict = {
                 'questionID': question[0],
                 'questionIntitule': question[1],
-                'themeID': question[2],
-                'niveauID': question[3]
+                'questionImage': question[2],
+                'themeID': question[3],
+                'niveauID': question[4]
             }
             items_list.append(item_dict)
         
@@ -60,7 +65,6 @@ def list_questions(niveauID, themeID):
     finally:
         cursor.close() 
         
- 
 #used to manage redundant question
 previous_questions = []        
 # Route pour donner une question choisi au hasard avec gestion de la rédondance (Read)
@@ -77,6 +81,7 @@ def get_question(themeID, niveauID):
             item_dict = {
                 'questionID': question[0],
                 'questionIntitule': question[1],
+                'questionImage': question[2]
             }
             items_list.append(item_dict)
             
@@ -100,7 +105,6 @@ def get_question(themeID, niveauID):
         return jsonify({"error": "Une erreur inattendue s'est produite", "details": str(e)}), 500
     finally:
         cursor.close()  
-
         
 # Route pour la création d'une question (Create)
 @question_route.route('/api/question_route/<int:themeID>/<int:niveauID>/', methods=['POST'])
@@ -108,11 +112,16 @@ def create_question(themeID, niveauID):
     
     try: 
         cursor = db.cursor()
-        data = request.json 
+        data = request.form 
         questionIntitule = data.get('questionIntitule')
-
+        
+        questionImage_path = None
+        if 'questionImage' in request.files:
+            questionImage = request.files['questionImage']
+            questionImage_path = upload_file.uploadImage(questionImage)
+            
         # Insert the new question into the DB
-        cursor.execute(os.environ.get('create_question_query'), (questionIntitule, themeID, niveauID))
+        cursor.execute(os.environ.get('create_question_query'), (questionIntitule, questionImage_path, themeID, niveauID))
         db.commit()
         
         # Get created question ID
@@ -133,7 +142,7 @@ def update_question(questionID):
     try:
         
         cursor = db.cursor()
-        data = request.json
+        data = request.form # Allow flask to support form-data 
 
         if not data:
             return jsonify({"error": "Aucune donnée JSON fournie"}), 400
@@ -146,13 +155,31 @@ def update_question(questionID):
         if questionIntitule is None:
             return jsonify({"error": "Des champs obligatoires sont manquants dans la demande"}), 400
         
-        # Update only questionIntitule
-        if themeID is None or niveauID is None:
-            cursor.execute(os.environ.get('update_question_2_query'),(questionIntitule, questionID))
+        if 'questionImage' in request.files:
+            questionImage = request.files['questionImage']
+            
+            #Run SQL query to get answer image_path 
+            cursor.execute(os.environ.get('answer_image_query'),(questionID,))
+            questions = cursor.fetchone()
+            # Path of the image to delete
+            image_path = questions[0]
+            # Delete file if exist
+            if os.path.exists(image_path):
+                image_path = upload_file.uploadImage(questionImage)
+                # Update only questionIntitule
+                if themeID is None or niveauID is None:
+                    cursor.execute(os.environ.get('update_question_2_with_image_query'),(questionIntitule, image_path, questionID))
+                else:
+                    # Update all question information in the database
+                    cursor.execute(os.environ.get('update_question_with_image_query'),(questionIntitule, image_path, themeID, niveauID, questionID))
         else:
-            # Update all question information in the database
-            cursor.execute(os.environ.get('update_question_query'),(questionIntitule, themeID, niveauID, questionID))
-        
+            # Update only questionIntitule
+            if themeID is None or niveauID is None:
+                cursor.execute(os.environ.get('update_question_2_without_image_query'),(questionIntitule, questionID))
+            else:
+                # Update all question information in the database
+                cursor.execute(os.environ.get('update_question_without_image_query'),(questionIntitule, themeID, niveauID, questionID))
+                      
         db.commit()
 
         if cursor.rowcount == 0:
