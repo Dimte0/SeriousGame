@@ -39,7 +39,7 @@ def create_game():
         partieNom = data.get('partieNom')
         
         # Insert the new game into the database 
-        cursor.execute(os.environ.get('create_game_query'), (partieNom))
+        cursor.execute(os.environ.get('create_game_query'), (partieNom,))
         db.commit()
 
         # Get the created game ID

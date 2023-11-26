@@ -1,7 +1,11 @@
 from flask import Blueprint, jsonify, request
 from database import db
+import sys
+sys.path.append('F:/ProjetSeriousGame/SeriousGame/backend_serious_game/upload')
+from upload import upload_file
 import mysql.connector
 import os
+import random
 
 answer_route = Blueprint('answer', __name__)
 
@@ -17,7 +21,6 @@ def inc_score(joueurID, niveauID):
         if level:
             #get niveauPoint
             level_point = level[2] #get level_point in the tuple
-            print("Level point: ",level_point)
         # Update answer information in the database
         cursor.execute(os.environ.get('increment_player_point_query'),(level_point, joueurID))
         db.commit()
@@ -92,7 +95,7 @@ def list_answers(questionID):
                 'reponseImage':answer[2]
             }
             items_list.append(item_dict)
-        
+        random.shuffle(items_list)
         return jsonify(items_list)
     except mysql.connector.Error as e:
         return jsonify({"error": "Erreur lors de la récupération de la liste des reponses", "details": str(e)}), 500
@@ -101,34 +104,34 @@ def list_answers(questionID):
     finally:
         cursor.close()  
 
-def allowed_file(filename):
-    # Vérifier si l'extension du fichier est autorisée (ajustez selon vos besoins)
-    allowed_extensions = {'png', 'jpg', 'jpeg', 'gif'}
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions   
+# def allowed_file(filename):
+#     # Vérifier si l'extension du fichier est autorisée (ajustez selon vos besoins)
+#     allowed_extensions = {'png', 'jpg', 'jpeg', 'gif'}
+#     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions   
   
-#Upload files or image (image = request.files['image'])
-def uploadImage(image):
+# #Upload files or image (image = request.files['image'])
+# def uploadImage(image):
         
-    try:
-        upload_folder = os.path.join("C:", "Projet_Serious_Game_Files")
+#     try:
+#         upload_folder = os.path.join("C:", "Projet_Serious_Game_Files")
         
-        if image and allowed_file(image.filename):
-            #Create folder if not exist
-            if not os.path.exists(upload_folder):
-                os.makedirs(upload_folder)
+#         if image and allowed_file(image.filename):
+#             #Create folder if not exist
+#             if not os.path.exists(upload_folder):
+#                 os.makedirs(upload_folder)
 
-            image_path = os.path.join(upload_folder, image.filename)
-            image.save(image_path) #replace the image if it exists
-            #use the image_path when insert or update the image in the database
-            return image_path
-    except PermissionError as pe:
-        print(f"Erreur de permission lors de l'enregistrement de l'image : {pe}")
-    except Exception as e:
-        return jsonify({"error": "Une erreur inattendue s'est produite", "details": str(e)}) 
+#             image_path = os.path.join(upload_folder, image.filename)
+#             image.save(image_path) #replace the image if it exists
+#             #use the image_path when insert or update the image in the database
+#             return image_path
+#     except PermissionError as pe:
+#         print(f"Erreur de permission lors de l'enregistrement de l'image : {pe}")
+#     except Exception as e:
+#         return jsonify({"error": "Une erreur inattendue s'est produite", "details": str(e)}) 
 
 # Route pour la création d'une question (Create)
 @answer_route.route('/api/answer_route/<int:QuestionID>/', methods=['POST'])
-def create_question(QuestionID):
+def create_answer(QuestionID):
     
     try: 
         cursor = db.cursor()
@@ -140,8 +143,8 @@ def create_question(QuestionID):
         image_path = None
         if 'reponseImage' in request.files:
             reponseImage = request.files['reponseImage']
-           
-            image_path = uploadImage(reponseImage)
+            image_path = upload_file.uploadImage(reponseImage)
+            
         # Insert the new answer into the database 
         cursor.execute(os.environ.get('create_answer_query'), (reponseIntitule, image_path, reponseIsCorrect, reponseFeedback, QuestionID))
         db.commit()
@@ -163,7 +166,6 @@ def create_question(QuestionID):
 @answer_route.route('/api/answer_route/<int:reponseID>/', methods=['PUT'])
 def update_answer(reponseID):
     try:
-        
         cursor = db.cursor()
         data = request.form # Allow flask to support form-data 
 
@@ -189,12 +191,11 @@ def update_answer(reponseID):
             image_path = answers[0]
             # Delete file if exist
             if os.path.exists(image_path):
+                image_path = upload_file.uploadImage(reponseImage)
+                # Update the answer information in the database
+                cursor.execute(os.environ.get('update_answer_with_image_query'),(reponseIntitule, image_path, reponseIsCorrect, reponseFeedback, questionID, reponseID))
                 os.remove(image_path)
            
-            image_path = uploadImage(reponseImage)
-            
-            # Update the answer information in the database
-            cursor.execute(os.environ.get('update_answer_with_image_query'),(reponseIntitule, image_path, reponseIsCorrect, reponseFeedback, questionID, reponseID))
         else:
             # Update the answer information in the database
             cursor.execute(os.environ.get('update_answer_without_image_query'),(reponseIntitule, reponseIsCorrect, reponseFeedback, questionID, reponseID))
