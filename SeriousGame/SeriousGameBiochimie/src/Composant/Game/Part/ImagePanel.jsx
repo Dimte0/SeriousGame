@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-
+import img_arrow from "../../Global/fleche_jeu.png"
 export default function ImagePanel({ShowImage}) {
 
     //state
@@ -9,7 +9,11 @@ export default function ImagePanel({ShowImage}) {
     //render
     return (
         <div onClick={ShowImage}>
-            MONTRE LIMAGE
+            <img src={img_arrow} style={{
+                width : '6%'
+            }}>
+            
+            </img>
         </div>
     )
 }

@@ -19,26 +19,26 @@ const UnityComp = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () =>({
     async MovePlayer(x, id) {
-      if(!IsMouvCamera) setIsMouvCamera(true)
-      else sendMessage("Main Camera", "SwitchToNextPlayer")
+      /* if(!IsMouvCamera) setIsMouvCamera(true)
+      else sendMessage("Main Camera", "SwitchToNextPlayer") */
       sendMessage("Player"+id, "MoveNext", x);
     }
   }))
 
   return (
-    <div>
+    <div className="UnityProprieties">
     <Unity 
       unityProvider={unityProvider} 
       style={{
-        margin : "50px",
+        position : "relative",
+        marginTop :"25px",
         width: "800px",
         height : "400px",
         border : "2px solid black",
         background : "red",
+        borderRadius : "50px"
       }}
     />
-    {/* <button onClick={MovePlayer}>Appeler la fonction Unity</button>
-    <Game Bouge={MovePlayer}></Game> */}
     </div>
   )
 })

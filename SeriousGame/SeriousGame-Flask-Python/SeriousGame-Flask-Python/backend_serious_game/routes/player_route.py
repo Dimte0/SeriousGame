@@ -42,7 +42,7 @@ def create_player(PartieID):
         joueurPoint = data.get('joueurPoint')
 
         # Insert new player into the Database
-        cursor.execute(os.environ.get('create_game_query'), (joueurPseudo, joueurPoint, PartieID))
+        cursor.execute(os.environ.get('create_player_query'), (joueurPseudo, joueurPoint, PartieID))
         db.commit()
         
         # Get created player ID

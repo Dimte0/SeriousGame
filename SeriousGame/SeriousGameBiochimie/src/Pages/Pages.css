@@ -1,15 +1,40 @@
-.InitPlayers #middle{
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+:root {
+  --color-first          : #65587f;
+  --color-second         : #f18867;
+  --color-third          : #e85f99;
+  --color-forth          : #50bda1;
+  --block-width          :   50%;
+  --block-height         :   270px;
+  --border-width         : 20px;
+  --border-radius-outer  :     50px;
+  --border-radius-inner  : calc(var(--border-radius-outer) / 2);
+  --font-plain           : 'IBM Plex Sans', sans-serif;
+  --font-special         : 'Fredoka One', sans-serif;
+ 
+  box-sizing: border-box;
+  line-height: 1.4
+}
+
+.InitPlayers{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  /* background-color: pink; */
 }
 
 .InitPlayers #tope {
     position: relative;
+    
+    /* background-color: green; */
 }
 
 .InitPlayers #middle {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+    /* background-color: blue; */
     padding: 20px;
 }
 
@@ -24,7 +49,7 @@
     opacity: 1
 }
 
-.Game #imagePrint{
+.Game .imagePrint{
     /* background-color: red; */
     position: absolute;
     margin: 5%;
@@ -33,7 +58,7 @@
     z-index: 1;
 }
 
-.Game body{
+  .Game body{
     background-color: white;
   }
   
@@ -42,7 +67,7 @@
     font-size: 16px;
     margin: 2%;
     margin-inline: 5%;
-    border : 7px solid;
+    border : 4px solid;
     border-radius: 20px;
     border-color: rgb(11, 132, 11);
     box-shadow: 
@@ -51,11 +76,22 @@
   }
   
   .Game button:hover{
+
+    padding: 15px 30px;
     box-shadow: 
         2px 2px 10px 2px rgba(0,0,0,.5),
         0px -2px 10px 2px rgba(0,0,0,.5),
         inset 2px 2px 10px 2px rgba(0,0,0,.5),
         inset 0px -2px 10px 2px rgba(0,0,0,.5);
+  }
+
+  .Game #middle{
+    text-align: center;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    width:100%;
+    transform: translate(-50%, -50%);
   }
   
   .Game #bottom{
@@ -66,22 +102,195 @@
     width:100%;
     transform: translate(-50%, -50%);
   }
+
+  .Game #footer{
+    text-align: center;
+    position: absolute;
+    top: 95%;
+    left: 50%;
+    width:100%;
+    transform: translate(-50%, -50%);
+  }
+
   .Game #bottom-question-panel{
-    position:static;
-    border-radius: 20px;
-    border : 15px solid;
-    border-color: rgb(11, 132, 11);
-    background-color: rgb(142, 133, 133);
+    --border-width: 7px;
+
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 70%;
-    margin-inline:15%;
-    padding-block:3%;
+    margin-inline:15%;/* 
+    padding-block:3%; */
+    font-family: Lato, sans-serif;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    color: white;
+    background-color: rgb(142, 133, 133);
     box-shadow: 
         inset 2px 2px 10px 2px rgba(0,0,0,.5),
         inset 0px -2px 10px 2px rgba(0,0,0,.5);
-  
+    border-radius: 18em;
+
+    &::after {
+      position: absolute;
+      content: "";
+      top: calc(-1 * var(--border-width));
+      left: calc(-1 * var(--border-width));
+      z-index: -1;
+      width: calc(100% + var(--border-width) * 2);
+      height: calc(100% + var(--border-width) * 2);
+      background: linear-gradient(
+        60deg,
+        rgb(10, 94, 3),rgb(50, 94, 3), rgb(100, 94, 3), rgb(150, 94, 3),
+        rgb(10, 94, 3),rgb(50, 94, 3), rgb(100, 94, 3), rgb(150, 94, 3),
+        rgb(10, 94, 3),rgb(50, 94, 3), rgb(100, 94, 3), rgb(150, 94, 3)
+      );
+      background-size: 300% 300%;
+      background-position: 0 50%;
+      border-radius: calc(2 * 18em);
+      animation: moveGradient 12s alternate infinite;
+    }
+  }
+
+  @keyframes moveGradient {
+    50% {
+      background-position: 100% 50%;
+    }
   }
   
   .Game #question-zone{
     color: white;
     font-weight: bold;
   }
+
+  .slide-top-mid{
+    animation : slideTopMid 1s forwards
+  }
+
+  .slide-mid-top{
+    animation : slideMidTop 1s forwards
+  }
+
+  .slide-in {
+    position: relative;
+    animation: slideIn 1s forwards;
+    /* Cela dit à l'animation de rester dans son état final après son exécution */
+  }
+
+  .slide-out {
+    animation: slideOutAnimation 1s forwards;
+  }
+
+  .opacity-on-off {
+    animation: opacity-on-off 2s forwards;
+  }
+
+  @keyframes buttonBigger {
+
+  }
+
+  @keyframes slideTopMid {
+    from{
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(0%);
+    }
+  }
+
+  @keyframes slideMidTop {
+    from{
+      transform: translateY(0%);
+    }
+    to {
+      transform: translateY(-100%);
+    }
+  }
+  
+  @keyframes slideIn {  
+    from {
+      transform: translateX(-100%); /* Commence à l'extérieur de l'écran à gauche */
+    }
+    to {
+      transform: translateX(0); /* Termine à sa position initiale */
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOutAnimation {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+  }
+
+  @keyframes opacity-on-off {
+    0% {
+      opacity: 0;
+    }
+    35%{
+      opacity: 1;
+    }
+    80%{
+      opacity: 1;
+    }
+    100%{
+      opacity: 0;
+    }
+  }
+
+  .Game #MidAnimPanel {
+    position: relative;
+    display: flex;
+    justify-content: center;  
+    align-items: center;
+    margin-inline:-2%; 
+    padding-block:5%;
+    padding-inline: 10%;
+    font-family: Lato, sans-serif;
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    color: white;
+    background-color: rgba(22, 6, 6, 0.7);
+    box-shadow: 
+        inset 0px -12px 10px 0px rgba(255, 255, 255, 0.5),
+        inset 0px 12px 10px 0px rgba(255, 255, 255, 0.5);
+    /* border-radius: 18em; */
+  }
+
+  /* .Game #absoluteProgressBar{
+    position: absolute;
+    top: 10%;
+    right: 0;
+  } */
+
+  .drop-left-container {
+    position: absolute;
+    top: 10%;
+    right: 0;
+  }
+  
+  .Game #absoluteProgressBar {
+    position: relative;
+    top: 0;
+    left: -120px; /* Position à gauche en dehors du conteneur */
+    /* background-color: #fff; */ /* Couleur de fond */
+    width: 120px; /* Largeur du menu */
+    padding: 10px;
+   /*  border: 1px solid #ccc; */
+    border-radius: 4px;
+    display: none; /* Masquer initialement */
+    transition: left 0.3s ease; /* Transition pour l'animation */
+  }
+  
+  .drop-left-container.open #absoluteProgressBar {
+    display: block; /* Afficher le menu lorsqu'il est ouvert */
+    left: 0; /* Faire apparaître le menu en position gauche */
+  }
+
+  /* .Game #UnityProprieties{
+  } */

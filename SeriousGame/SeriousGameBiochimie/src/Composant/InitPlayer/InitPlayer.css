@@ -1,49 +1,106 @@
-.InitPlayerComp .frame{
+/*MAIN du MID*/
+
+.InitPlayerComp{
     position: relative;
-    border: 5px solid;
-    border-color: purple;
+    /* background-color: red; */
+    width: 100%;
+}
+
+/*FRAME DESIGN*/
+
+.InitPlayerComp .frame{
+    --border-width: 7px;
+    position: relative;
+
+    /* border: 5px solid;
+    border-color: purple; */
     border-radius: 10px;
+    
     background-color: black;
-    width: 50%;
-    margin-left: 25%;
     margin-bottom: 3% ;
+
+    &::after {
+        position: absolute;
+        content: "";
+        top: calc(-1 * var(--border-width));
+        left: calc(-1 * var(--border-width));
+        z-index: -1;
+        width: calc(100% + var(--border-width) * 2);
+        height: calc(100% + var(--border-width) * 2);
+        background: linear-gradient(
+          10deg,
+          red,red, purple, rgb(150, 94, 3),
+          rgb(150, 94, 3),red,purple,purple
+        );
+        background-size: 300% 300%;
+        background-position: 0 50%;
+        border-radius: calc(2 * 10px);
+        animation: moveGradient 12s alternate infinite;
+      }
 }
 
 .InitPlayerComp #PlayerDisplay{ 
 }
 
-    .InitPlayerComp ul{
-        position: relative;
-        display: inline-flex;
-        flex-wrap: wrap;
-        width: 100%;
-        height: 45%;
-        top : 15%;
-        list-style: none;
+/*TOP DESIGN*/
+
+.InitPlayerComp .NbrPlayer{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content:space-around;
+    align-items: center;
+}
+
+/*MID DESIGN*/
+
+.InitPlayerComp #PlayerDisplay ul{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 1.5%;
+    list-style: none;
+}
+
+.InitPlayerComp #PlayerDisplay li{
+    position: relative;
+    /* padding-inline: 10px;
+    margin: 25px; */
+    width: 35%;
+    margin-inline: 3%;
+    border: 5px solid;
+    background-color: white;
+    border-color: greenyellow;
+    border-radius: 2px;
+    box-shadow: 
+        inset 2px 2px 10px 2px rgba(0,0,0,.5),
+        inset 0px -2px 10px 2px rgba(0,0,0,.5);
+}
+
+/*BOTTOM DESIGN*/
+
+.InitPlayerComp #Sender{
+
+    position: relative;
+    padding: 2%;
+
+}
+
+    
+
+.InitPlayerComp textarea{
+
+    border: none;        /* Supprimer la bordure */
+    resize: none;        /* Désactiver le redimensionnement */
+    outline: none;       /* Supprimer la mise en évidence au focus */
+    background: transparent; /* Fond transparent */
+}
+
+/*ANIMMATION*/
+
+@keyframes moveGradient {
+    50% {
+      background-position: 100% 50%;
     }
-
-    .InitPlayerComp li{
-        position: relative;
-        padding-inline: 10px;
-        margin: 25px;
-        width: 13%;
-        border: 5px solid;
-        background-color: white;
-        border-color: greenyellow;
-        border-radius: 2px;
-        box-shadow: 
-            inset 2px 2px 10px 2px rgba(0,0,0,.5),
-            inset 0px -2px 10px 2px rgba(0,0,0,.5);
-    }
-
-    .InitPlayerComp textarea{
-        
-        max-width: 300px;
-        height: 100%;
-        margin-top: 10px;
-
-        border: none;        /* Supprimer la bordure */
-        resize: none;        /* Désactiver le redimensionnement */
-        outline: none;       /* Supprimer la mise en évidence au focus */
-        background: transparent; /* Fond transparent */
-      }
+  }

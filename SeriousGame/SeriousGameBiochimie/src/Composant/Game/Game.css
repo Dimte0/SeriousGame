@@ -33,6 +33,7 @@
   }
 
   .Game #bottom-question-panel{
+    background-color: red;
     position:static;
     border-radius: 20px;
     border : 15px solid;

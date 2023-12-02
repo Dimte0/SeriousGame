@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import React from 'react'
 import { useNavigate } from 'react-router-dom';
 
 export default function SenderButton({NamesPlayer}) {
@@ -16,6 +15,6 @@ export default function SenderButton({NamesPlayer}) {
   }
 
   return (
-    <div onClick={Send}>SenderButton </div>
+    <div id="Sender" onClick={Send}>SenderButton </div>
   )
 }

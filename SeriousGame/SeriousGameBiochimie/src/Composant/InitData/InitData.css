@@ -1,0 +1,95 @@
+#page_initData{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: green;
+    height: 100vh;
+}
+
+#page_initData #top{
+    flex:1
+}
+
+.proposition{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    padding-top: 2%;
+    margin-left: 2%;
+    padding-right: 2%;
+}
+
+.proposition .border_TA{
+    position: relative;
+    width: 100%;
+}
+
+.proposition textarea{
+    position: relative;
+    background-color: rgb(232, 254, 134);
+    width: 90%;
+    box-sizing: border-box;
+    border: 4px solid red; /* Bordure de 1 pixel solide de couleur grise */
+    border-radius: 25px;
+    outline-color: purple;
+    outline-width: 5px;
+
+
+    padding: 8px; /* Espace intérieur pour le contenu */
+
+    /*border: none;        /* Supprimer la bordure */
+    resize: none;        /* Désactiver le redimensionnement */
+    /*outline: none;       /* Supprimer la mise en évidence au focus */
+    /*background: transparent;  /* Fond transparent */
+}
+
+.proposition input{
+    background-color: red;
+}
+
+.panelReponse .proposition {
+    position: relative;
+    /* top: 0; */
+    /* left: -120px; */ /* Position à gauche en dehors du conteneur */
+    /* background-color: #fff; */ /* Couleur de fond */
+    /* width: 120px; */ /* Largeur du menu */
+    /* padding: 10px; */
+   /*  border: 1px solid #ccc; */
+    /* border-radius: 4px; */
+    display: none; /* Masquer initialement */
+    transition: left 0.3s ease; /* Transition pour l'animation */
+  }
+
+.panelReponse.open .proposition {
+    display: flex; /* Afficher le menu lorsqu'il est ouvert */
+    left: 0; /* Faire apparaître le menu en position gauche */
+    padding: 1.5%;
+}
+
+.proposition ul li{
+    padding: 10px;
+    margin-left: 50px;
+    border: 5px solid;
+    list-style-type: none;
+    text-align: center;
+}
+
+.proposition ul{
+    position: relative;
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+}
+
+.panelReponse{
+    position: relative;
+    left: 0;
+}
+
+#page_initData #bottom {
+    background-color: red;
+    align-items: flex-end;
+    padding :15px
+}
