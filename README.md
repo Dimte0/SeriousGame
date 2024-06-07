@@ -20,9 +20,10 @@ To achieve this, our team had to call on the skills acquired during the various 
 
 Auteur/Author: 
 Ce projet a été réalisé avec une équipe de 3 personnes dans le cadre d'un projet TER de Master Informatique.
-Luc MAILLET 
-Dimitri RATANE 				
-Nandraina Jerry Alex RAZAFINDRAIBE
+Luc MAILLET; 
+Dimitri RATANE;			
+Nandraina Jerry Alex RAZAFINDRAIBE;
 
 Mot-clés/Keywords:
-web , Unity, Mysql , java , python
+web , Unity, Mysql, ReactJS, python, Flask, Serious Game, Méthode agile
+
